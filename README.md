@@ -17,6 +17,7 @@
 - **Force reinstall** — manually reinstalls the latest release after a confirmation dialog. Never uninstalls the existing app.
 - **Manual downgrade / Version history** — list eligible official stable Nuvio IPK releases, select an older version, confirm, and install in place. **Never runs automatically**; automatically turns OFF automatic updates after a requested downgrade to avoid immediately undoing it.
 - **Automatic updates (opt-in)** — checks daily at 19:30 local time; installs only when enabled and the current version is identifiable.
+- **Italian and English** — switch with the IT / EN buttons in the dashboard or on the sign-in page; logs, history and scheduled checks follow the same language.
 - **Web UI** — responsive dark interface for PC and smartphone, login, formatted release notes, **live progress** (check → download → package check → install → confirm), TV status, history and logs.
 - **Linux server / mini PC / VM** — `install.sh` creates a non-privileged system user and `systemd` services.
 - **Windows PC** — double-click `install-windows.cmd`: per-user install, guided TV pairing, Task Scheduler jobs (while the user is logged in), diagnostics script.
@@ -34,7 +35,7 @@ On a smartphone (same page, responsive, bottom navigation bar):
 | --- | --- | --- | --- |
 | <img src="docs/screenshots/mobile-login.jpg" width="190" alt="Login"> | <img src="docs/screenshots/mobile-update-available.jpg" width="190" alt="Update available"> | <img src="docs/screenshots/mobile-installing.jpg" width="190" alt="Installing"> | <img src="docs/screenshots/mobile-updated.jpg" width="190" alt="Up to date"> |
 
-<sub>Screenshots of the real dashboard with a simulated TV (Nuvio 1.2.9 → 1.2.10). UI language: Italian.</sub>
+<sub>Screenshots of the real dashboard with a simulated TV (Nuvio 1.2.9 → 1.2.10), in English. The whole UI is also available in Italian (IT / EN switch at the top).</sub>
 
 ## Requirements
 

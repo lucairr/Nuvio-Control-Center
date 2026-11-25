@@ -19,6 +19,8 @@ TV_DEVICE="${TV_DEVICE:-nuvio-lg}"
 TV_NAME="${TV_NAME:-LG webOS TV}"
 WEB_PORT="${WEB_PORT:-8765}"
 WEB_BIND="${WEB_BIND:-0.0.0.0}"
+# Dashboard/log language: NUVIO_LANG=it|en (default: system language, English if not Italian)
+case "${NUVIO_LANG:-${LANG:-}}" in it*) NUVIO_LANG=it ;; *) NUVIO_LANG=en ;; esac
 
 if ! command -v python3 >/dev/null 2>&1; then
   echo 'Install Python 3.9+ first (sudo apt-get install python3).' >&2
@@ -57,7 +59,7 @@ if [[ ! -f "$STATE_DIR/config.json" ]]; then
     echo 'Provide the TV IP on first install: sudo TV_IP=192.168.1.50 bash install.sh' >&2
     exit 1
   fi
-  export TV_IP WEB_PORT WEB_BIND TV_DEVICE TV_NAME
+  export TV_IP WEB_PORT WEB_BIND TV_DEVICE TV_NAME NUVIO_LANG
   python3 - <<'PY'
 import ipaddress, os, re
 ipaddress.ip_address(os.environ['TV_IP'])
@@ -85,7 +87,8 @@ from pathlib import Path
 p=Path('/var/lib/nuvio-updater/config.json')
 p.write_text(json.dumps({'tv_ip':os.environ['TV_IP'],'tv_device':os.environ['TV_DEVICE'],
  'tv_name':os.environ['TV_NAME'],'auto_update':False,
- 'web_port':int(os.environ['WEB_PORT']),'web_bind':os.environ['WEB_BIND']},indent=2)+'\n')
+ 'web_port':int(os.environ['WEB_PORT']),'web_bind':os.environ['WEB_BIND'],
+ 'language':os.environ['NUVIO_LANG']},indent=2)+'\n')
 PY
   chown "$APP_USER:$APP_USER" "$STATE_DIR/config.json"
   chmod 0600 "$STATE_DIR/config.json"

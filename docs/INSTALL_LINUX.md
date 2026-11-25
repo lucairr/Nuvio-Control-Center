@@ -48,6 +48,12 @@ Replace `192.168.1.50` with the IP **shown in the Developer Mode app**. For LAN 
 sudo TV_IP=192.168.1.50 WEB_BIND=127.0.0.1 WEB_PORT=8765 bash install.sh
 ```
 
+Language of the dashboard, logs and history: `NUVIO_LANG=it` or `NUVIO_LANG=en` (default: the system language, English if it is not Italian). You can change it later with the IT / EN buttons in the dashboard.
+
+```bash
+sudo TV_IP=192.168.1.50 NUVIO_LANG=en bash install.sh
+```
+
 The installer creates:
 
 - `/opt/nuvio-updater/` – code and dashboard, owned by root;

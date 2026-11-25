@@ -94,3 +94,18 @@
 .side-support:hover{background:#211a38;border-color:#5a4380}
 footer .support-link{color:#a98ae6;text-decoration:underline;text-underline-offset:2px}
 footer .support-link:hover{color:#cbb1ff}
+
+/* ---- language switch (IT / EN) ---- */
+.lang-switch{display:inline-flex;align-items:center;gap:2px;padding:3px;border-radius:9px;border:1px solid #2c3043;background:#121522}
+.lang-switch button{min-width:34px;min-height:28px;padding:4px 8px;border:0;border-radius:6px;background:transparent;color:#8990a9;font-size:11px;font-weight:750;letter-spacing:.6px}
+.lang-switch button:hover{color:#e3d4ff}
+.lang-switch button[aria-pressed="true"]{background:#29203f;color:#e0cfff;box-shadow:inset 0 0 0 1px #4a3866}
+.login-lang{position:fixed;top:18px;right:18px;z-index:3}
+@media(max-width:700px){.top-right .today{display:none}}
+/* translated text spans keep the look of the plain text they replaced */
+.crumb .crumb-ws{padding:0;color:inherit}
+.section-kicker [data-i18n]{font-size:inherit;vertical-align:baseline;margin:0}
+footer [data-i18n]{padding:0}
+.downgrade-action-title [data-i18n]{color:inherit;font-size:inherit}
+.mobile-nav a span[data-i18n]{font-size:10.5px;line-height:1.2;color:inherit}
+.mobile-nav a.selected span[data-i18n]{color:inherit}

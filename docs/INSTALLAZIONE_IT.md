@@ -10,6 +10,7 @@ Nuvio Control Center è un pannello web **indipendente e non ufficiale** per con
 - **Versioni precedenti / Downgrade**: elenco delle release ufficiali con IPK, scelta manuale di una versione più vecchia e conferma obbligatoria. L'auto-update viene disattivato quando avvii il downgrade.
 - **Automatico opzionale**: controllo tutti i giorni alle 19:30, installazione solo se la versione TV è nota e c'è un aggiornamento.
 - **Dashboard** con login, stato TV, note delle release, storico e log.
+- **Italiano e inglese**: si cambia con i pulsanti IT / EN in alto nella dashboard o nella pagina di accesso. Log, cronologia e controlli programmati seguono la stessa lingua. Le installazioni esistenti restano in italiano; una nuova installazione parte nella lingua del sistema (per forzarla: `NUVIO_LANG=it` su Linux, `-Language it` su Windows).
 
 ## Requisiti
 

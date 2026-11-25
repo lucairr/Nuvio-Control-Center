@@ -15,11 +15,13 @@ param(
     [switch]$AllowLan,      # dashboard reachable from phone/other PCs on the LAN
     [switch]$SkipTasks,     # no Task Scheduler jobs (manual start only)
     [switch]$Pair,          # pair the TV right after installing, without asking
-    [switch]$NoPair         # never ask to pair
+    [switch]$NoPair,        # never ask to pair
+    [string]$Language = ''  # dashboard/log language; default: Windows display language (it) or English
 )
 $ErrorActionPreference = 'Stop'
 . (Join-Path $PSScriptRoot 'common.ps1')
 if (-not $InstallDir) { $InstallDir = $script:NuvioDefaultInstallDir }
+if ($Language -and $Language -notin @('it', 'en')) { throw 'Language must be it or en.' }
 $repo = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 if (-not (Test-Path (Join-Path $repo 'nuvio\server.py'))) {
     throw 'Run the installer from an extracted copy of the complete repository (folder with nuvio\, web\, windows\).'
@@ -95,16 +97,19 @@ if (-not (Test-Path $script:NuvioConfig)) {
     if (-not [System.Net.IPAddress]::TryParse($TvIp, [ref]$parsed)) { throw ('Not a valid IP address: ' + $TvIp) }
     if ($Port -lt 1024 -or $Port -gt 65535) { throw 'Port must be between 1024 and 65535.' }
     $bind = '127.0.0.1'
+    $lang = $Language
+    if (-not $lang) { if ((Get-UICulture).TwoLetterISOLanguageName -eq 'it') { $lang = 'it' } else { $lang = 'en' } }
     if ($AllowLan) { $bind = '0.0.0.0' }
     $config = [ordered]@{
         tv_ip = $TvIp; tv_device = 'nuvio-lg'; tv_name = $TvName; auto_update = $false
-        web_port = $Port; web_bind = $bind; cli_dir = $cliDir
+        web_port = $Port; web_bind = $bind; cli_dir = $cliDir; language = $lang
     }
     Save-NuvioConfig $config
     Write-Ok ('Created ' + $script:NuvioConfig + ' (automatic installation OFF)')
 } else {
     Set-NuvioConfigValue 'cli_dir' $cliDir
     if ($AllowLan) { Set-NuvioConfigValue 'web_bind' '0.0.0.0' }
+    if ($Language) { Set-NuvioConfigValue 'language' $Language }
     Write-Ok 'Existing configuration, password and TV pairing preserved'
 }
 $cfg = Read-NuvioConfig

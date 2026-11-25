@@ -48,6 +48,7 @@ Open the shortcut, sign in and press **Verifica aggiornamenti**. Enable **Instal
 | `-Pair` / `-NoPair` | Pair the TV without asking / never ask |
 | `-AllowLan` | Dashboard reachable from phone/other PCs (`0.0.0.0`). Offers to create a firewall rule limited to **Private** networks and the **local subnet** (UAC prompt) |
 | `-Port 8765` | Different dashboard port (first install only) |
+| `-Language it` / `-Language en` | Dashboard, log and history language (default: Windows display language, English if not Italian). Changeable later with IT / EN in the dashboard |
 | `-SkipTasks` | No scheduled tasks; start manually with `start-dashboard.ps1` |
 
 Never port-forward the dashboard to the Internet: it is plain HTTP. Use a VPN (WireGuard/Tailscale) for remote access.

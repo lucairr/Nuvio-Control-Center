@@ -13,10 +13,11 @@ import time
 from urllib.parse import urlparse
 
 try:
-    from . import core
+    from . import core, i18n
     from .locking import available
 except ImportError:
     import core
+    import i18n
     from locking import available
 
 WEB = Path(__file__).resolve().parent.parent / 'web'
@@ -50,7 +51,7 @@ def clear_stale_busy():
     try:
         if available(core.LOCK_FILE):
             core.update_state(busy=False, job=None, step=None,
-                              message='Operazione precedente interrotta; stato ripristinato.')
+                              message=core.tr('stale_cleared'))
             return True
     except OSError:
         pass
@@ -128,7 +129,7 @@ class Handler(BaseHTTPRequestHandler):
         path = WEB / filename
         try: data = path.read_bytes()
         except OSError:
-            return self.reply(404, {'error': 'File non trovato'})
+            return self.reply(404, {'error': core.tr('file_not_found')})
         self.send_response(200)
         self.headers_common(content_type, len(data))
         self.end_headers()
@@ -153,17 +154,17 @@ class Handler(BaseHTTPRequestHandler):
     def require_auth(self, csrf=False):
         s = self.session()
         if not s:
-            self.reply(401, {'error': 'Sessione scaduta, effettua l’accesso.'})
+            self.reply(401, {'error': core.tr('session_expired')})
             return False
         if csrf:
             token = self.headers.get('X-CSRF-Token', '')
             if not hmac.compare_digest(token, s['csrf']):
-                self.reply(403, {'error': 'Token di sicurezza non valido.'})
+                self.reply(403, {'error': core.tr('bad_csrf')})
                 return False
             origin = self.headers.get('Origin')
             host = self.headers.get('Host', '')
             if origin and urlparse(origin).netloc != host:
-                self.reply(403, {'error': 'Origine della richiesta non valida.'})
+                self.reply(403, {'error': core.tr('bad_origin')})
                 return False
         return True
 
@@ -180,12 +181,12 @@ class Handler(BaseHTTPRequestHandler):
         path = urlparse(self.path).path
         if path == '/':
             self.serve_file('dashboard.html' if self.session() else 'login.html', 'text/html; charset=utf-8')
-        elif path in ('/static/style.css', '/static/app.js', '/static/login.js'):
+        elif path in ('/static/style.css', '/static/app.js', '/static/login.js', '/static/i18n.js'):
             filename = path.rsplit('/', 1)[1]
             self.serve_file(filename, 'text/css; charset=utf-8' if filename.endswith('.css') else 'application/javascript; charset=utf-8')
         elif path == '/api/session':
             s = self.session()
-            self.reply(200, {'authenticated': bool(s), 'csrf': s['csrf'] if s else None})
+            self.reply(200, {'authenticated': bool(s), 'csrf': s['csrf'] if s else None, 'language': core.config()['language']})
         elif path == '/api/status':
             if not self.require_auth(): return
             self.reply(200, core.status_public())
@@ -194,16 +195,16 @@ class Handler(BaseHTTPRequestHandler):
             try:
                 self.reply(200, {'releases': core.get_previous_releases()})
             except Exception as exc:
-                self.reply(502, {'error': 'GitHub non disponibile: ' + str(exc)[:170]})
+                self.reply(502, {'error': core.tr('github_unavailable', error=str(exc)[:170])})
         else:
-            self.reply(404, {'error': 'Pagina inesistente'})
+            self.reply(404, {'error': core.tr('page_not_found')})
 
     def do_POST(self):
         path = urlparse(self.path).path
         if path == '/api/login':
             origin = self.headers.get('Origin')
             if origin and urlparse(origin).netloc != self.headers.get('Host', ''):
-                self.reply(403, {'error': 'Origine della richiesta non valida.'})
+                self.reply(403, {'error': core.tr('bad_origin')})
                 return
             data = self.body()
             ip = self.client_address[0]
@@ -212,12 +213,12 @@ class Handler(BaseHTTPRequestHandler):
                 LOGIN_ATTEMPTS[ip] = attempts
                 blocked = len(attempts) >= 7
             if blocked:
-                self.reply(429, {'error': 'Troppi tentativi. Riprova tra qualche minuto.'})
+                self.reply(429, {'error': core.tr('too_many_attempts')})
                 return
             pw = str(data.get('password', ''))[:512]
             if not check_pw(pw):
                 with MUTEX: LOGIN_ATTEMPTS.setdefault(ip, []).append(time.time())
-                self.reply(401, {'error': 'Password errata.'})
+                self.reply(401, {'error': core.tr('wrong_password')})
                 return
             sid = secrets.token_urlsafe(40)
             csrf = secrets.token_urlsafe(40)
@@ -236,33 +237,44 @@ class Handler(BaseHTTPRequestHandler):
         if path in ('/api/actions/check', '/api/actions/update', '/api/actions/force'):
             action = path.rsplit('/', 1)[1]
             if not run_background(action):
-                self.reply(409, {'error': 'È già in corso una verifica o installazione.'})
+                self.reply(409, {'error': core.tr('busy')})
                 return
-            self.reply(202, {'ok': True, 'message': 'Operazione avviata: ' + action})
+            self.reply(202, {'ok': True, 'message': core.tr('op_started', action=action)})
             return
         if path == '/api/actions/downgrade':
             payload = self.body()
             tag = payload.get('tag')
             if payload.get('confirm') != 'DOWNGRADE' or not isinstance(tag, str) or not core.STABLE_TAG.fullmatch(tag):
-                self.reply(400, {'error': 'Conferma o versione di destinazione non valida.'})
+                self.reply(400, {'error': core.tr('bad_confirm')})
                 return
             if not run_background('downgrade', tag):
-                self.reply(409, {'error': 'È già in corso una verifica o installazione.'})
+                self.reply(409, {'error': core.tr('busy')})
                 return
-            self.reply(202, {'ok': True, 'message': 'Downgrade avviato verso ' + tag})
+            self.reply(202, {'ok': True, 'message': core.tr('dg_started', tag=tag)})
             return
         if path == '/api/settings/auto':
             enabled = self.body().get('enabled')
             if type(enabled) is not bool:
-                self.reply(400, {'error': 'Valore non valido.'})
+                self.reply(400, {'error': core.tr('bad_value')})
                 return
             cfg = core.read_json(core.CONFIG_FILE, {})
             cfg['auto_update'] = enabled
             core.write_json(core.CONFIG_FILE, cfg)
-            core.log('Aggiornamenti automatici ' + ('attivati' if enabled else 'disattivati'))
+            core.log(core.tr('auto_on' if enabled else 'auto_off'))
             self.reply(200, {'ok': True, 'auto_update': enabled})
             return
-        self.reply(404, {'error': 'Azione sconosciuta'})
+        if path == '/api/settings/language':
+            lang = self.body().get('language')
+            if lang not in i18n.LANGUAGES:
+                self.reply(400, {'error': core.tr('bad_value')})
+                return
+            cfg = core.read_json(core.CONFIG_FILE, {})
+            cfg['language'] = lang
+            core.write_json(core.CONFIG_FILE, cfg)
+            core.log(core.tr('language_set'))
+            self.reply(200, {'ok': True, 'language': lang})
+            return
+        self.reply(404, {'error': core.tr('unknown_action')})
 
 
 def doctor():
@@ -274,30 +286,32 @@ def doctor():
         nonlocal ok
         ok = ok and good
         print(f"[{'OK' if good else '!!'}] {label}: {value}")
-    print('Nuvio Control Center ' + core.VERSION + ' - diagnostica')
-    line('Sistema', f'{platform.system()} {platform.release()} ({platform.machine()})')
+    T = core.tr
+    print('Nuvio Control Center ' + core.VERSION + ' - ' + T('dr_title'))
+    line(T('dr_system'), f'{platform.system()} {platform.release()} ({platform.machine()})')
     line('Python', platform.python_version(), tuple(map(int, platform.python_version_tuple()[:2])) >= (3, 9))
-    line('Cartella dati', str(core.STATE_DIR), core.STATE_DIR.is_dir())
-    line('Configurazione', 'presente' if core.CONFIG_FILE.is_file() else 'MANCANTE', core.CONFIG_FILE.is_file())
-    line('Password dashboard', 'impostata' if AUTH_FILE.is_file() else 'MANCANTE (set-password)', AUTH_FILE.is_file())
+    line(T('dr_data_dir'), str(core.STATE_DIR), core.STATE_DIR.is_dir())
+    line(T('dr_language'), core.config()['language'])
+    line(T('dr_config'), T('dr_present') if core.CONFIG_FILE.is_file() else T('dr_missing'), core.CONFIG_FILE.is_file())
+    line(T('dr_password'), T('dr_pw_set') if AUTH_FILE.is_file() else T('dr_pw_missing'), AUTH_FILE.is_file())
     for name in ('node', 'ares-install', 'ares-novacom', 'ares-setup-device'):
         path = core.find_cli(name)
-        line(name, path or 'NON TROVATO nel PATH', bool(path))
+        line(name, path or T('dr_not_in_path'), bool(path))
     cfg = core.config()
     online = core.tv_tcp_online(cfg['tv_ip'])
-    line('TV ' + cfg['tv_ip'] + ':9922', 'raggiungibile' if online else 'non raggiungibile (TV spenta / Dev Mode off / IP errato)', online)
+    line('TV ' + cfg['tv_ip'] + ':9922', T('dr_reachable') if online else T('dr_unreachable'), online)
     try:
         with socket.create_connection(('127.0.0.1' if cfg['web_bind'] == '0.0.0.0' else cfg['web_bind'], cfg['web_port']), timeout=1.5):
-            line('Dashboard porta ' + str(cfg['web_port']), 'in ascolto')
+            line(T('dr_port', port=cfg['web_port']), T('dr_listening'))
     except OSError:
-        line('Dashboard porta ' + str(cfg['web_port']), 'non in ascolto (servizio/attivita non avviati?)', False)
+        line(T('dr_port', port=cfg['web_port']), T('dr_not_listening'), False)
     if online and core.find_cli('ares-install'):
         try:
             info = core.get_installed(cfg['tv_device'])
-            line('Nuvio sulla TV', info.get('version') or ('presente, versione non leggibile' if info.get('present') else 'non installato'), bool(info.get('present')))
+            line(T('dr_nuvio'), info.get('version') or (T('dr_version_unreadable') if info.get('present') else T('dr_not_installed')), bool(info.get('present')))
         except RuntimeError as exc:
-            line('Associazione TV (' + cfg['tv_device'] + ')', str(exc)[:200], False)
-    print('Risultato: ' + ('tutto OK' if ok else 'ci sono punti da sistemare (vedi righe !!)'))
+            line(T('dr_pairing', device=cfg['tv_device']), str(exc)[:200], False)
+    print(T('dr_result_ok') if ok else T('dr_result_ko'))
     return 0 if ok else 1
 
 
@@ -306,7 +320,7 @@ def main():
     sub = parser.add_subparsers(dest='command', required=True)
     sub.add_parser('serve')
     sub.add_parser('set-password')
-    sub.add_parser('doctor', help='Diagnostica locale (nessuna modifica alla TV)')
+    sub.add_parser('doctor', help=core.tr('cli_doctor_help'))
     job = sub.add_parser('run')
     job.add_argument('action', choices=('auto', 'check', 'update', 'force'))
     args = parser.parse_args()
@@ -320,11 +334,11 @@ def main():
         redirect_output_if_windowless()
     if args.command == 'set-password':
         import getpass
-        pw = getpass.getpass('Password dashboard (min. 12 caratteri): ')
-        if pw != getpass.getpass('Ripeti password: '):
-            parser.error('Le password non coincidono.')
+        pw = getpass.getpass(core.tr('pw_prompt'))
+        if pw != getpass.getpass(core.tr('pw_repeat')):
+            parser.error(core.tr('pw_mismatch'))
         core.write_json(AUTH_FILE, hash_pw(pw))
-        print('Password impostata.')
+        print(core.tr('pw_set'))
     elif args.command == 'doctor':
         raise SystemExit(doctor())
     elif args.command == 'run':
@@ -336,12 +350,12 @@ def main():
         if core.state().get('busy'):
             clear_stale_busy()
         if not AUTH_FILE.is_file():
-            parser.error('Password dashboard non configurata: esegui set-password.')
+            parser.error(core.tr('pw_missing'))
         cfg = core.config()
         # Clear stale flags only if there is no active external operation.
         address = (cfg['web_bind'], cfg['web_port'])
         if os.sys.stdout is not None:
-            print(f'Dashboard in ascolto su {address[0]}:{address[1]}', flush=True)
+            print(core.tr('listening', host=address[0], port=address[1]), flush=True)
         ThreadingHTTPServer(address, Handler).serve_forever(poll_interval=0.5)
 
 
