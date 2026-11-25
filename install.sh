@@ -111,3 +111,4 @@ printf 'Open http://<server-ip>:%s (or localhost when bound to 127.0.0.1)\n' "$(
 printf 'TV CLI profile: user=%s, HOME=%s\n' "$APP_USER" "$STATE_DIR"
 printf 'Next: follow docs/INSTALL_LINUX.md to pair the TV with Developer Mode.\n'
 printf 'Auto-install is disabled by default on a fresh installation.\n'
+printf '\nNuvio Control Center is free. If it saves you time: %s\n' 'https://ko-fi.com/lucairr'

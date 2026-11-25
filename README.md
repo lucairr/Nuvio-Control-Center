@@ -70,6 +70,8 @@ No admin rights needed: the LG CLI is installed for your user, Task Scheduler st
 
 **No `.exe` is included.** The Windows installer is a PowerShell script; it needs local Python and Node.js.
 
+> **Like it?** Nuvio Control Center is free and stays free. If it saves you a trip to Dev Manager at every release, [buy me a coffee on Ko-fi](https://ko-fi.com/lucairr) ☕ - it funds testing on more TVs and new features.
+
 ## Manual downgrade: Versions history
 
 Open the dashboard, run **Verifica aggiornamenti** to identify the installed version, then open **Versioni precedenti → Carica release**, select an older eligible official stable IPK and explicitly confirm. The app verifies the download's package ID and version before invoking `ares-install`. It does not uninstall Nuvio. On a requested downgrade the system disables the automatic-install switch so the old version isn't replaced the next evening. If LG refuses the older package, the app stops and records the error; user settings may still be incompatible with an older Nuvio. **Back up settings first where possible.**

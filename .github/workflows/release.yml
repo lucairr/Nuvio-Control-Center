@@ -28,4 +28,4 @@ jobs:
         run: |
           PRE=""
           case "$GITHUB_REF_NAME" in *-*) PRE="--prerelease" ;; esac
-          gh release create "$GITHUB_REF_NAME" dist/Nuvio-Control-Center-v*.zip dist/Nuvio-Control-Center-v*.tar.gz dist/Nuvio-Control-Center-v*-SHA256SUMS.txt --verify-tag --generate-notes $PRE --title "Nuvio Control Center $GITHUB_REF_NAME"
+          gh release create "$GITHUB_REF_NAME" dist/Nuvio-Control-Center-v*.zip dist/Nuvio-Control-Center-v*.tar.gz dist/Nuvio-Control-Center-v*-SHA256SUMS.txt --verify-tag --generate-notes --notes "Nuvio Control Center is free and open source. If it saves you time, you can support it on [Ko-fi](https://ko-fi.com/lucairr)." $PRE --title "Nuvio Control Center $GITHUB_REF_NAME"

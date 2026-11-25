@@ -189,3 +189,5 @@ Write-Host ('Dashboard    : ' + $site + '  (desktop shortcut created)')
 Write-Host 'Diagnostics  : powershell -ExecutionPolicy Bypass -File "%LOCALAPPDATA%\NuvioControlCenter\doctor.ps1"'
 Write-Host 'Pair the TV  : powershell -ExecutionPolicy Bypass -File "%LOCALAPPDATA%\NuvioControlCenter\connect-tv-windows.ps1"'
 Write-Host 'Automatic installation starts DISABLED. Nothing was changed on the TV.'
+Write-Host ''
+Write-Host 'Nuvio Control Center is free. If it saves you time: https://ko-fi.com/lucairr' -ForegroundColor Magenta
