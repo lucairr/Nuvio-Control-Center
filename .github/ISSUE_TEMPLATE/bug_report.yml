@@ -1,0 +1,49 @@
+name: Bug report / Segnalazione problema
+description: Something does not work while checking or installing Nuvio updates
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Never paste** SSH keys, the TV passphrase, your dashboard password, `auth.json`, cookies or public IP addresses.
+        **Non incollare mai** chiavi SSH, passphrase della TV, password della dashboard, `auth.json` o IP pubblici.
+  - type: dropdown
+    id: host
+    attributes:
+      label: Host
+      options: [Debian/Ubuntu (systemd), Windows 10/11, macOS, Docker / NAS, Raspberry Pi / ARM64, Other]
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: Control Center version, OS version, Python, Node.js, LG CLI (`ares-install -V`)
+      placeholder: "1.2.0-beta, Windows 11 23H2, Python 3.12.4, Node 22.11, CLI 3.2.6"
+    validations:
+      required: true
+  - type: input
+    id: tv
+    attributes:
+      label: TV model, webOS version and Nuvio version (from -> to)
+      placeholder: "OLED C2, webOS 22, Nuvio 1.2.9 -> 1.2.10"
+  - type: dropdown
+    id: step
+    attributes:
+      label: Where did it fail?
+      options: [Installation of the Control Center, TV pairing, Check for updates, Download, Install on TV, Final version check, Scheduled/automatic check, Downgrade, Dashboard / login]
+    validations:
+      required: true
+  - type: textarea
+    id: doctor
+    attributes:
+      label: Output of the diagnostics (sanitized)
+      description: "Linux: `cd /opt/nuvio-updater && sudo -u nuvio-updater env HOME=/var/lib/nuvio-updater NUVIO_HOME=/var/lib/nuvio-updater python3 -m nuvio.server doctor` - Windows: run `doctor.ps1`"
+      render: text
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error message / last log lines from the dashboard Console
+      render: text
+    validations:
+      required: true

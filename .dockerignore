@@ -1,0 +1,17 @@
+.git
+.github
+__pycache__
+*.pyc
+*.ipk
+*.key
+*.pem
+*.log
+*.zip
+*.gz
+**/auth.json
+**/config.json
+**/state.json
+**/.ssh
+.vscode
+.venv
+dist

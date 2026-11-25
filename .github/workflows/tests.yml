@@ -1,0 +1,87 @@
+name: Tests
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  python:
+    name: Unit tests (${{ matrix.os }}, Python ${{ matrix.python }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python: ['3.9', '3.13']
+        exclude:
+          # setup-python has no Python 3.9 build for Apple Silicon runners
+          - os: macos-latest
+            python: '3.9'
+        include:
+          - os: macos-latest
+            python: '3.10'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Compile and unit tests
+        run: |
+          python -m compileall -q nuvio
+          python -m unittest discover -s tests -v
+  scripts:
+    name: Script syntax
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Shell syntax
+        run: bash -n install.sh uninstall.sh scripts/connect-tv-linux.sh macos/install-macos.sh macos/uninstall-macos.sh
+  docker-config:
+    name: Docker structure & YAML
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check Compose configuration
+        run: docker compose config -q
+      - name: Check image build files present
+        run: |
+          test -f Dockerfile
+          test -f .dockerignore
+          test -f nuvio/scheduler.py
+          test -f nuvio/bootstrap.py
+  powershell:
+    name: PowerShell parse (${{ matrix.shell }})
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # Windows PowerShell 5.1 is what most users run; pwsh is PowerShell 7.
+        shell: [powershell, pwsh]
+    defaults:
+      run:
+        shell: ${{ matrix.shell }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Parse all PowerShell scripts
+        run: |
+          $failed = $false
+          Get-ChildItem windows -Filter *.ps1 | ForEach-Object {
+            $tokens = $null
+            $errors = $null
+            [void][System.Management.Automation.Language.Parser]::ParseFile($_.FullName, [ref]$tokens, [ref]$errors)
+            if ($errors.Count) { Write-Host "::error file=$($_.Name)::$($errors | Out-String)"; $failed = $true }
+            else { Write-Host "OK $($_.Name)" }
+          }
+          if ($failed) { exit 1 }
+      - name: Scripts are ASCII only (PowerShell 5.1 reads BOM-less files as ANSI)
+        run: |
+          $bad = Get-ChildItem windows -Filter *.ps1 | Where-Object { [System.IO.File]::ReadAllBytes($_.FullName) | Where-Object { $_ -gt 127 } | Select-Object -First 1 }
+          if ($bad) { $bad | ForEach-Object { Write-Host "::error file=$($_.Name)::non-ASCII character" }; exit 1 }
+      - name: Windows helper functions smoke test
+        run: |
+          . .\windows\common.ps1
+          $py = Resolve-NuvioPython
+          if (-not $py) { throw 'Resolve-NuvioPython found nothing' }
+          Write-Host ('Python resolved: ' + $py.Exe + ' / ' + $py.Pyw + ' / ' + $py.Version)
+          if (-not (Test-Path $py.Pyw)) { throw 'pythonw not found' }
+          Write-Host ('npm prefix: ' + (Get-NpmPrefix))

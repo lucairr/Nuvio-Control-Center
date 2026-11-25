@@ -1,0 +1,20 @@
+[Unit]
+Description=Nuvio Control Center scheduled release check
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=nuvio-updater
+Group=nuvio-updater
+WorkingDirectory=/opt/nuvio-updater
+Environment=HOME=/var/lib/nuvio-updater
+Environment=NUVIO_HOME=/var/lib/nuvio-updater
+Environment=PATH=/usr/local/bin:/usr/bin:/bin
+ExecStart=/usr/bin/python3 -m nuvio.server run auto
+UMask=0077
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/nuvio-updater
+ProtectHome=true
+PrivateTmp=true

@@ -1,0 +1,26 @@
+# Runtime data and private keys
+config.json
+state.json
+auth.json
+*.pem
+*.key
+*.ipk
+.ssh/
+.nuvio-control-center/
+/var/lib/nuvio-updater/
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+# Local output
+*.log
+*.zip
+*.tar.gz
+dist/

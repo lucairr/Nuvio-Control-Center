@@ -1,0 +1,11 @@
+[Unit]
+Description=Check for new Nuvio TV releases every day at 19:30
+
+[Timer]
+OnCalendar=*-*-* 19:30:00
+Persistent=true
+AccuracySec=1min
+Unit=nuvio-check.service
+
+[Install]
+WantedBy=timers.target

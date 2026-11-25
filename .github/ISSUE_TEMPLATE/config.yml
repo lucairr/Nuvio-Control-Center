@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Problems with the Nuvio app itself (playback, addons, UI)
+    url: https://github.com/NuvioMedia/NuvioTVSmart/issues
+    about: Nuvio TV is a separate project. This repository only handles updating it.
