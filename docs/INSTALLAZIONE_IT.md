@@ -55,7 +55,6 @@ Non servono privilegi di amministratore: il CLI LG viene installato in automatic
 
 - **Mini PC / NUC / VM Proxmox o ESXi**: usa l'installazione Debian/Ubuntu qui sopra; è la soluzione consigliata per avere aggiornamenti anche a PC spento.
 - **Raspberry Pi 4/5 con sistema a 64 bit**: stessa installazione Linux, ma **la CLI LG su ARM64 non è ancora verificata**.
-- macOS, Docker e NAS non sono supportati in questa versione.
 
 [Compatibilità hardware e stato test](HARDWARE_COMPATIBILITY.md).
 

@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Python 3.9 (Debian 11) on Linux runs in the python39 container job below:
+        # Python 3.9 (Debian 11 baseline) on Linux: see the python39 job below,
         # current Ubuntu runners no longer ship a 3.9 build.
         os: [ubuntu-latest, windows-latest]
         python: ['3.13']
@@ -28,7 +28,7 @@ jobs:
           python -m compileall -q nuvio
           python -m unittest discover -s tests -v
   python39:
-    name: Unit tests (Linux, Python 3.9 container - Debian 11 baseline)
+    name: Unit tests (Linux, Python 3.9 - Debian 11 baseline)
     runs-on: ubuntu-latest
     container: python:3.9-slim
     steps:

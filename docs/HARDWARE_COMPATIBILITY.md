@@ -9,7 +9,7 @@
 | Proxmox VM, Intel NUC, mini PC, home server (Linux x86-64) | `install.sh` | **Not yet hardware-tested** | Best choice for 24/7 updates |
 | Windows 10/11 x64 | `install-windows.cmd` | CI-tested; **live TV not yet verified** | Runs while the user is signed in |
 | Raspberry Pi 4/5, **64-bit** Raspberry Pi OS | `install.sh` | **Experimental** | Official LG CLI on ARM64 not verified |
-| macOS, Docker, NAS, 32-bit systems | — | **Not supported in this release** | |
+| 32-bit systems | — | **Not supported** | Requires 64-bit Python/Node and a working webOS CLI |
 
 The official [LG webOS CLI documentation](https://webostv.developer.lge.com/develop/tools/cli-installation) lists the supported desktop environments. Working Python and Node.js alone do **not** prove the webOS CLI or SSH pairing works on a given architecture.
 
