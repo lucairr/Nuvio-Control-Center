@@ -49,7 +49,7 @@ def clear_stale_busy():
     """Return True when no operation is really running (and reset the flag)."""
     try:
         if available(core.LOCK_FILE):
-            core.update_state(busy=False, job=None,
+            core.update_state(busy=False, job=None, step=None,
                               message='Operazione precedente interrotta; stato ripristinato.')
             return True
     except OSError:

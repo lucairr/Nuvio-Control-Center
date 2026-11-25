@@ -30,3 +30,59 @@
 .downgrade-ack{display:flex;gap:11px;align-items:flex-start;margin-top:17px;color:#d6ccde;font-size:12px;line-height:1.65;cursor:pointer}.downgrade-ack input{accent-color:#b07cf3;margin-top:4px;flex-shrink:0}
 @media(max-width:900px){.downgrade-layout{grid-template-columns:1fr}}
 @media(max-width:700px){.downgrade-card{padding:19px}.version-chooser-head{flex-wrap:wrap}}
+
+/* ---- v1.2.0: rendered release notes ---- */
+[hidden]{display:none!important}
+.release-notes{white-space:normal;max-height:230px}
+.md-h{color:#e6dcff;font-weight:750;font-size:12.5px;margin:12px 0 4px;letter-spacing:-.1px}
+.md-h:first-child{margin-top:0}
+.md-ul{margin:4px 0 8px;padding-left:18px}
+.md-ul li{margin:3px 0;padding-left:2px}
+.md-ul li::marker{color:#9c77fb}
+.md-p{margin:6px 0}
+.release-notes code,.previous-notes code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.92em;background:#ffffff10;border:1px solid #ffffff14;border-radius:5px;padding:1px 5px;color:#d9ccff}
+.release-notes strong,.previous-notes strong{color:#ece6ff}
+.md-link{color:#bfa2ff;text-decoration:underline;text-underline-offset:2px}
+.previous-notes{margin:6px 0 0;max-height:120px;overflow:auto;font-size:11px;color:#a6a8bb;line-height:1.6}
+.previous-notes .md-h{font-size:11.5px;margin-top:6px}
+
+/* ---- v1.2.0: operation progress ---- */
+.progress-box{margin-top:22px;max-width:560px;background:#0d0b18b8;border:1px solid #5a4380;border-radius:13px;padding:15px 17px;backdrop-filter:blur(6px)}
+.progress-head{display:flex;align-items:center;gap:10px;font-size:13px;color:#efe6ff}
+.progress-pct{margin-left:auto;font-variant-numeric:tabular-nums;color:#c9b2ff;font-weight:750;font-size:12px}
+.progress-spinner{width:15px;height:15px;border-radius:50%;border:2px solid #9c77fb44;border-top-color:#c6a5ff;animation:spin .8s linear infinite;flex:0 0 15px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.progress-track{height:6px;border-radius:9px;background:#ffffff12;overflow:hidden;margin:12px 0 11px}
+.progress-fill{height:100%;width:0;border-radius:9px;background:linear-gradient(90deg,#8d63f2,#c6a5ff);transition:width .5s ease}
+.progress-fill.indeterminate{width:35%;animation:indet 1.3s ease-in-out infinite}
+@keyframes indet{0%{transform:translateX(-110%)}100%{transform:translateX(310%)}}
+.progress-steps{display:flex;gap:6px;list-style:none;margin:0;padding:0;font-size:10.5px;color:#7f7896;flex-wrap:wrap}
+.progress-steps li{display:flex;align-items:center;gap:5px;padding:4px 9px 4px 7px;border-radius:30px;border:1px solid #ffffff12;background:#ffffff06}
+.progress-steps li::before{content:"";width:6px;height:6px;border-radius:50%;background:#4b4560}
+.progress-steps li.done{color:#91e8c2;border-color:#2b6454;background:#112a2866}
+.progress-steps li.done::before{background:#70e3af}
+.progress-steps li.current{color:#f0e6ff;border-color:#8a68c9;background:#2b2045}
+.progress-steps li.current::before{background:#c6a5ff;box-shadow:0 0 0 3px #c6a5ff33;animation:pulse 1.2s infinite}
+.progress-msg{margin-top:10px;font-size:11.5px;color:#b4abca;line-height:1.5}
+
+/* ---- v1.2.0: mobile navigation ---- */
+.mobile-nav{display:none}
+@media(max-width:1000px){
+ .mobile-nav{display:grid;grid-template-columns:repeat(4,1fr);position:fixed;left:0;right:0;bottom:0;z-index:20;background:#0d101bf2;border-top:1px solid #262a3d;backdrop-filter:blur(10px);padding:6px 6px calc(6px + env(safe-area-inset-bottom))}
+ .mobile-nav a{display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 2px;border-radius:10px;font-size:10.5px;font-weight:650;color:#878ea6}
+ .mobile-nav a span{font-size:18px;line-height:1;color:#9d93b8}
+ .mobile-nav a.selected{color:#e0cfff;background:#29203f}
+ .mobile-nav a.selected span{color:#c6a5ff}
+ .content{padding-bottom:96px}
+ .toast{bottom:84px}
+ section[id],div[id=overview]{scroll-margin-top:12px}
+}
+@media(max-width:700px){
+ .hero-art{display:none}
+ .hero{min-height:0}
+ .hero-actions{margin-top:26px}
+ .hero-actions button{flex:1 1 100%}
+ .progress-box{max-width:none}
+ .toast{left:12px;right:12px;max-width:none;top:12px;bottom:auto;transform:translateY(-16px)}
+ .toast.show{transform:none}
+}

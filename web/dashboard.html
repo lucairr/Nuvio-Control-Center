@@ -4,10 +4,10 @@
 <aside class="sidebar">
   <div class="brand"><span class="brand-icon">N<span class="brand-orb"></span></span><span><strong>nuvio<span class="dot">.</span></strong><small>CONTROL CENTER</small></span></div>
   <div class="side-category">WORKSPACE</div>
-  <a class="nav-item selected" href="#overview"><span class="nav-symbol">◫</span> Panoramica <span class="nav-arrow">›</span></a>
-  <a class="nav-item" href="#versions"><span class="nav-symbol">⇣</span> Versioni precedenti</a>
-  <a class="nav-item" href="#activity"><span class="nav-symbol">◷</span> Attività</a>
-  <a class="nav-item" href="#console"><span class="nav-symbol">⌁</span> Console</a>
+  <a class="nav-item selected" href="#overview" data-section="overview"><span class="nav-symbol">◫</span> Panoramica <span class="nav-arrow">›</span></a>
+  <a class="nav-item" href="#versions" data-section="versions"><span class="nav-symbol">⇣</span> Versioni precedenti</a>
+  <a class="nav-item" href="#activity" data-section="activity"><span class="nav-symbol">◷</span> Attività</a>
+  <a class="nav-item" href="#console" data-section="console"><span class="nav-symbol">⌁</span> Console</a>
   <div class="side-bottom"><div class="side-panel"><div class="side-panel-header"><span class="mini-icon">▣</span> AUTOMAZIONE</div><strong>La tua TV, sempre aggiornata.</strong><p>Gestione Nuvio da un server Linux o da un PC Windows.</p></div><div class="side-footer"><span class="dot-online"></span> Linux / Windows <span class="muted">v1.2.0 beta</span></div></div>
 </aside>
 <main class="main">
@@ -16,7 +16,13 @@
     <div class="eyebrow"><span class="glow-dot"></span> SMART TV OPERATIONS</div>
     <div class="title-row"><div><h1>Il tuo Nuvio, <em>sotto controllo.</em></h1><p class="subtitle">Gestisci gli aggiornamenti di Nuvio TV senza aprire webOS Dev Manager.</p></div><span class="header-pill" id="overall-badge"><span class="pulse-dot"></span> Inizializzazione</span></div>
     <section class="hero panel">
-      <div class="hero-copy"><div class="section-kicker"><span>✦</span> DISPOSITIVO COLLEGATO</div><div class="tv-model" id="tv-name">LG webOS TV</div><div class="tv-sub">LG webOS <span class="separator">·</span> <span id="tv-ip">—</span> <span class="separator">·</span> <span id="tv-connection">Stato sconosciuto</span></div><div class="hero-actions"><button class="primary-btn" id="check-btn"><span class="btn-glyph">↻</span> Verifica aggiornamenti</button><button class="secondary-btn" id="update-btn"><span class="btn-glyph">⬇</span> Installa aggiornamento</button></div></div>
+      <div class="hero-copy"><div class="section-kicker"><span>✦</span> DISPOSITIVO COLLEGATO</div><div class="tv-model" id="tv-name">LG webOS TV</div><div class="tv-sub">LG webOS <span class="separator">·</span> <span id="tv-ip">—</span> <span class="separator">·</span> <span id="tv-connection">Stato sconosciuto</span></div><div class="hero-actions"><button class="primary-btn" id="check-btn"><span class="btn-glyph">↻</span> Verifica aggiornamenti</button><button class="secondary-btn" id="update-btn"><span class="btn-glyph">⬇</span> Installa aggiornamento</button></div>
+      <div class="progress-box" id="progress-box" hidden aria-live="polite">
+        <div class="progress-head"><span class="progress-spinner" aria-hidden="true"></span><strong id="progress-title">Operazione in corso</strong><span class="progress-pct" id="progress-pct"></span></div>
+        <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+        <ol class="progress-steps" id="progress-steps"><li data-step="check">Verifica</li><li data-step="download">Download</li><li data-step="verify">Controllo IPK</li><li data-step="install">Installazione</li><li data-step="confirm">Conferma</li></ol>
+        <div class="progress-msg" id="progress-msg"></div>
+      </div></div>
       <div class="hero-art" aria-hidden="true"><div class="art-glow"></div><div class="tv-stand"></div><div class="tv-frame"><div class="tv-screen"><span class="screen-sun"></span><span class="screen-line line-a"></span><span class="screen-line line-b"></span><span class="tv-n">n<span>·</span></span></div></div></div>
     </section>
     <div class="stats-grid">
@@ -52,6 +58,7 @@
   </div>
 </main>
 </div>
+<nav class="mobile-nav" aria-label="Sezioni"><a href="#overview" class="selected" data-section="overview"><span>◫</span>Panoramica</a><a href="#versions" data-section="versions"><span>⇣</span>Versioni</a><a href="#activity" data-section="activity"><span>◷</span>Attività</a><a href="#console" data-section="console"><span>⌁</span>Console</a></nav>
 <div class="toast" id="toast" role="status"></div>
 <dialog id="force-dialog"><div class="dialog-kicker">AZIONE MANUALE</div><h2>Forzare la reinstallazione?</h2><p>Scaricherò nuovamente l'ultimo IPK ufficiale di Nuvio e tenterò di installarlo sulla TV. Evita di avviare l'operazione mentre stai guardando qualcosa.</p><div class="dialog-actions"><button id="cancel-force" class="secondary-btn">Annulla</button><button id="confirm-force" class="danger-btn">Sì, reinstalla</button></div></dialog>
 <dialog id="downgrade-dialog"><div class="dialog-kicker">RIPRISTINO MANUALE</div><h2>Confermi il downgrade?</h2><p>Stai per passare da <strong id="downgrade-from">—</strong> a <strong id="downgrade-to">—</strong>. L'operazione potrebbe interrompere Nuvio e modificare la compatibilità delle impostazioni salvate. Nessuna disinstallazione verrà eseguita automaticamente. <strong>Gli aggiornamenti automatici saranno disattivati</strong> finché non li riattivi.</p><label class="downgrade-ack"><input type="checkbox" id="downgrade-ack"> Ho capito i rischi e desidero procedere.</label><div class="dialog-actions"><button type="button" id="cancel-downgrade" class="secondary-btn">Annulla</button><button type="button" id="confirm-downgrade" class="danger-btn" disabled>Conferma downgrade</button></div></dialog>

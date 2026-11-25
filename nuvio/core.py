@@ -114,7 +114,7 @@ def state():
     d = read_json(STATE_FILE, {})
     return {'latest': d.get('latest'), 'installed': d.get('installed'),
             'last_check': d.get('last_check'), 'last_success': d.get('last_success'),
-            'busy': bool(d.get('busy')), 'job': d.get('job'),
+            'busy': bool(d.get('busy')), 'job': d.get('job'), 'step': d.get('step'),
             'message': d.get('message', 'In attesa della prima verifica'),
             'history': d.get('history', [])[-30:], 'logs': d.get('logs', [])[-120:],
             'tv_online': d.get('tv_online'), 'update_available': d.get('update_available'),
@@ -451,7 +451,7 @@ def perform(action, target_tag=None):
         if action == 'downgrade' and (not isinstance(target_tag, str) or not STABLE_TAG.fullmatch(target_tag)):
             raise ValueError('Tag del downgrade non valido.')
         c = config()
-        update_state(busy=True, job=action, message='Controllo in corso…')
+        update_state(busy=True, job=action, step='check', message='Controllo in corso…')
         try:
             log('Avviato: ' + {'check': 'verifica manuale', 'update': 'aggiornamento', 'force': 'installazione forzata', 'auto': 'verifica programmata', 'downgrade': 'ripristino versione ' + str(target_tag)}[action])
             release = get_release()
@@ -515,16 +515,18 @@ def perform(action, target_tag=None):
                 return
             if action != 'downgrade' and cmp_local and cmp_remote and cmp_local > cmp_remote:
                 raise RuntimeError('La TV ha una versione più nuova di GitHub: downgrade bloccato.')
-            update_state(message='Download IPK ufficiale…')
+            update_state(step='download', message='Download IPK ufficiale ' + install_release['version'] + '…')
             with tempfile.TemporaryDirectory(prefix='nuvio-ipk-', dir=str(STATE_DIR)) as td:
                 path = Path(td) / 'nuvio.ipk'
                 checksum = download_release(install_release, path)
                 log('IPK scaricato (' + str(round(path.stat().st_size / 1048576, 1)) + ' MB), SHA-256 ' + checksum[:16] + '…')
+                update_state(step='verify', message='Verifica del pacchetto scaricato…')
                 metadata = verify_ipk(path, install_release['version'])
                 log(f'Pacchetto verificato: {metadata["id"]} v{metadata["version"]}')
-                update_state(message='Installazione su LG webOS…')
+                update_state(step='install', message='Installazione sulla TV in corso (non spegnerla)…')
                 out = cli('ares-install', ['--device', c['tv_device'], str(path)], timeout=300)
                 log('Installer LG: ' + out[-300:].replace('\n', ' '))
+            update_state(step='confirm', message='Controllo della versione installata…')
             post = get_installed(c['tv_device'])
             update_state(installed=post, update_available=(version_key(post['version']) < cmp_remote) if version_key(post['version']) and cmp_remote else None)
             if version_key(post['version']) != version_key(install_release['version']):
@@ -544,6 +546,6 @@ def perform(action, target_tag=None):
             log(msg, 'error')
             raise
         finally:
-            update_state(busy=False, job=None)
+            update_state(busy=False, job=None, step=None)
     finally:
         guard.__exit__(None, None, None)

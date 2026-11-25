@@ -82,6 +82,34 @@ class ConsoleEncodingTests(IsolatedState):
         self.assertIn('\u2192', core.state()['logs'][-1]['message'])
 
 
+class ProgressStepTests(IsolatedState):
+    def test_update_reports_every_step_then_clears(self):
+        core.write_json(core.CONFIG_FILE, {'tv_ip': '192.0.2.1', 'tv_device': 'nuvio-lg'})
+        release = {'version': '1.2.10', 'name': 'n.ipk', 'size': 100, 'notes': '', 'release_url': 'x', 'url': 'x', 'sha256': ''}
+        tv = {'v': '1.2.9'}
+        seen = []
+        real_update = core.update_state
+        def spy(**kw):
+            if kw.get('step'):
+                seen.append(kw['step'])
+            return real_update(**kw)
+        def install(name, args, timeout=45):
+            tv['v'] = '1.2.10'
+            return 'ok'
+        with mock.patch.object(core, 'update_state', side_effect=spy), \
+             mock.patch.object(core, 'get_release', return_value=release), \
+             mock.patch.object(core, 'tv_tcp_online', return_value=True), \
+             mock.patch.object(core, 'get_installed', side_effect=lambda d: {'present': True, 'version': tv['v'], 'source': 't'}), \
+             mock.patch.object(core, 'download_release', side_effect=lambda r, dest: (Path(dest).write_bytes(b'x'), '0' * 64)[1]), \
+             mock.patch.object(core, 'verify_ipk', return_value={'id': core.APP_ID, 'version': '1.2.10'}), \
+             mock.patch.object(core, 'cli', side_effect=install):
+            core.perform('update')
+        self.assertEqual(seen, ['check', 'download', 'verify', 'install', 'confirm'])
+        st = core.state()
+        self.assertFalse(st['busy'])
+        self.assertIsNone(st['step'])
+
+
 class WindowsCliTests(IsolatedState):
     def test_windows_cli_hides_console_and_keeps_user_home(self):
         with mock.patch.object(core, 'is_windows', return_value=True), \

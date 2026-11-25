@@ -2,6 +2,8 @@
 
 **A self-hosted web dashboard for keeping Nuvio TV updated on LG webOS Developer Mode devices.**
 
+![Nuvio Control Center on PC and smartphone during an update](docs/screenshots/showcase.jpg)
+
 [🇮🇹 Guida italiana](docs/INSTALLAZIONE_IT.md) · [🇮🇹 Pubblicazione su GitHub](docs/PUBBLICAZIONE_GITHUB_IT.md) · [Linux setup](docs/INSTALL_LINUX.md) · [Windows setup](docs/INSTALL_WINDOWS.md) · [Hardware matrix](docs/HARDWARE_COMPATIBILITY.md) · [Test plan (IT)](docs/PIANO_TEST_IT.md) · [Troubleshooting](docs/TROUBLESHOOTING.md) · [Security](SECURITY.md)
 
 > **Community project · v1.2.0 beta · Not affiliated with NuvioMedia or LG.** This is **not** a replacement for the official [Nuvio TV Installer](https://github.com/NuvioMedia/NuvioTVSmart-Installer). The official installer handles **initial installation**. This project adds a password-protected local dashboard, scheduled release checks, and subsequent webOS updates for an existing Nuvio installation.
@@ -13,10 +15,24 @@
 - **Force reinstall** — manually reinstalls the latest release after a confirmation dialog. Never uninstalls the existing app.
 - **Manual downgrade / Version history** — list eligible official stable Nuvio IPK releases, select an older version, confirm, and install in place. **Never runs automatically**; automatically turns OFF automatic updates after a requested downgrade to avoid immediately undoing it.
 - **Automatic updates (opt-in)** — checks daily at 19:30 local time; installs only when enabled and the current version is identifiable.
-- **Web UI** — responsive dark interface, login, release notes, TV status, history, activity logs and troubleshooting information.
+- **Web UI** — responsive dark interface for PC and smartphone, login, formatted release notes, **live progress** (check → download → package check → install → confirm), TV status, history and logs.
 - **Linux server / mini PC / VM** — `install.sh` creates a non-privileged system user and `systemd` services.
 - **Windows PC** — double-click `install-windows.cmd`: per-user install, guided TV pairing, Task Scheduler jobs (while the user is logged in), diagnostics script.
 - **No Python third-party libraries** — Python standard library only. The official LG webOS CLI needs Node.js.
+
+## Screenshots
+
+| Update available | Installing (live progress) | Previous versions |
+| --- | --- | --- |
+| ![Update available](docs/screenshots/desktop-update-available.jpg) | ![Installing](docs/screenshots/desktop-installing.jpg) | ![Previous versions](docs/screenshots/desktop-previous-versions.jpg) |
+
+On a smartphone (same page, responsive, bottom navigation bar):
+
+| Login | Update available | Installing | Up to date |
+| --- | --- | --- | --- |
+| <img src="docs/screenshots/mobile-login.jpg" width="190" alt="Login"> | <img src="docs/screenshots/mobile-update-available.jpg" width="190" alt="Update available"> | <img src="docs/screenshots/mobile-installing.jpg" width="190" alt="Installing"> | <img src="docs/screenshots/mobile-updated.jpg" width="190" alt="Up to date"> |
+
+<sub>Screenshots of the real dashboard with a simulated TV (Nuvio 1.2.9 → 1.2.10). UI language: Italian.</sub>
 
 ## Requirements
 
