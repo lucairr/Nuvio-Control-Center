@@ -25,7 +25,7 @@ REPO = 'NuvioMedia/NuvioTVSmart'
 API_URL = 'https://api.github.com/repos/' + REPO + '/releases/latest'
 RELEASES_URL = 'https://api.github.com/repos/' + REPO + '/releases?per_page=100'
 TAG_RELEASE_URL = 'https://api.github.com/repos/' + REPO + '/releases/tags/'
-STATE_DIR = Path(os.environ.get('NUVIO_HOME') or (str(Path.home() / '.nuvio-control-center') if os.name in ('nt',) or sys.platform == 'darwin' else '/var/lib/nuvio-updater'))
+STATE_DIR = Path(os.environ.get('NUVIO_HOME') or (str(Path.home() / '.nuvio-control-center') if os.name == 'nt' else '/var/lib/nuvio-updater'))
 CONFIG_FILE = STATE_DIR / 'config.json'
 STATE_FILE = STATE_DIR / 'state.json'
 LOCK_FILE = STATE_DIR / 'operation.lock'
@@ -178,9 +178,9 @@ def cli(name, args, timeout=45):
     if not binary:
         raise RuntimeError(f'Comando {name} assente. Installa @webos-tools/cli e verifica il PATH del servizio.')
     env = os.environ.copy()
-    # Linux systemd / Docker CLI profiles live under the private service home.
-    # macOS LaunchAgents use the pairing created in the interactive user's HOME.
-    if not is_windows() and sys.platform != 'darwin':
+    # Linux systemd: the LG CLI profile and SSH key live under the private service home.
+    # Windows: the pairing belongs to the interactive user's profile.
+    if not is_windows():
         env['HOME'] = str(STATE_DIR)
     extra = {}
     if is_windows():

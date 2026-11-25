@@ -2,7 +2,7 @@
 
 **A self-hosted web dashboard for keeping Nuvio TV updated on LG webOS Developer Mode devices.**
 
-[🇮🇹 Guida italiana](docs/INSTALLAZIONE_IT.md) · [🇮🇹 Pubblicazione su GitHub](docs/PUBBLICAZIONE_GITHUB_IT.md) · [Linux setup](docs/INSTALL_LINUX.md) · [Windows setup](docs/INSTALL_WINDOWS.md) · [macOS](docs/INSTALL_MACOS.md) · [Docker/NAS](docs/INSTALL_DOCKER.md) · [Hardware matrix](docs/HARDWARE_COMPATIBILITY.md) · [Test plan (IT)](docs/PIANO_TEST_IT.md) · [Troubleshooting](docs/TROUBLESHOOTING.md) · [Security](SECURITY.md)
+[🇮🇹 Guida italiana](docs/INSTALLAZIONE_IT.md) · [🇮🇹 Pubblicazione su GitHub](docs/PUBBLICAZIONE_GITHUB_IT.md) · [Linux setup](docs/INSTALL_LINUX.md) · [Windows setup](docs/INSTALL_WINDOWS.md) · [Hardware matrix](docs/HARDWARE_COMPATIBILITY.md) · [Test plan (IT)](docs/PIANO_TEST_IT.md) · [Troubleshooting](docs/TROUBLESHOOTING.md) · [Security](SECURITY.md)
 
 > **Community project · v1.2.0 beta · Not affiliated with NuvioMedia or LG.** This is **not** a replacement for the official [Nuvio TV Installer](https://github.com/NuvioMedia/NuvioTVSmart-Installer). The official installer handles **initial installation**. This project adds a password-protected local dashboard, scheduled release checks, and subsequent webOS updates for an existing Nuvio installation.
 
@@ -16,8 +16,6 @@
 - **Web UI** — responsive dark interface, login, release notes, TV status, history, activity logs and troubleshooting information.
 - **Linux server / mini PC / VM** — `install.sh` creates a non-privileged system user and `systemd` services.
 - **Windows PC** — double-click `install-windows.cmd`: per-user install, guided TV pairing, Task Scheduler jobs (while the user is logged in), diagnostics script.
-- **macOS beta** — a per-user shell installer and LaunchAgents (not tested on real Mac/TV).
-- **Docker beta** — self-hosted dashboard plus scheduled checks, with persistent data for Linux mini-PCs and some NAS/Raspberry Pi 64-bit hosts (not yet hardware-tested).
 - **No Python third-party libraries** — Python standard library only. The official LG webOS CLI needs Node.js.
 
 ## Requirements
@@ -26,9 +24,7 @@
 | --- | --- | --- |
 | Linux Debian 11+/Ubuntu 22.04+ with systemd (x86-64) | Python 3.9+, Node 20+, npm, LG CLI | Debian VM user-tested; other machines unverified |
 | Windows 10/11 x64 | Python 3.9+, Node 20+, PowerShell 5.1+, LG CLI | Software tests only |
-| macOS Intel / Apple Silicon | Python 3.9+, Node 20+, npm, LG CLI | Experimental; not hardware-tested |
-| Docker on Linux x86-64, selected NAS systems | Docker Engine + Compose; runtime bundled in image | Experimental; not hardware-tested |
-| Raspberry Pi 4/5 / ARM64 NAS | 64-bit Linux and supported Node/LG CLI | Experimental; CLI ARM64 compatibility not verified |
+| Raspberry Pi 4/5 with 64-bit Raspberry Pi OS | Same as Linux | Experimental; LG CLI on ARM64 not verified |
 
 **TV requirement (all options):** LG webOS Developer Mode + Key Server, LAN connectivity, and **Nuvio already installed** (`space.nuvio.webos`). This updater does **not** manage LG firmware; it changes the **Nuvio app version only**. See the [hardware matrix](docs/HARDWARE_COMPATIBILITY.md).
 
@@ -56,28 +52,6 @@ No admin rights needed: the LG CLI is installed for your user, Task Scheduler st
 
 **No `.exe` is included.** The Windows installer is a PowerShell script; it needs local Python and Node.js.
 
-## Quick start: macOS (experimental)
-
-Install Python, Node.js and the official LG CLI, then from the extracted repository root:
-
-```bash
-npm install -g @webos-tools/cli
-TV_IP=192.168.1.50 bash macos/install-macos.sh
-```
-
-The script creates user LaunchAgents and leaves automatic installation disabled. Pair the LG in the same user account. See [macOS instructions](docs/INSTALL_MACOS.md).
-
-## Quick start: Docker / NAS / Raspberry Pi 64-bit (experimental)
-
-```bash
-docker compose build
-docker compose run --rm dashboard python3 -m nuvio.bootstrap --tv-ip 192.168.1.50
-docker compose run --rm -it dashboard python3 -m nuvio.server set-password
-docker compose up -d
-```
-
-Pair the TV **inside the dashboard container** (commands in [Docker guide](docs/INSTALL_DOCKER.md)). Local dashboard default: `http://localhost:8765` on the Docker host. ARM64 LG CLI and NAS compatibility have **not** been established; no 32-bit support.
-
 ## Manual downgrade: Versions history
 
 Open the dashboard, run **Verifica aggiornamenti** to identify the installed version, then open **Versioni precedenti → Carica release**, select an older eligible official stable IPK and explicitly confirm. The app verifies the download's package ID and version before invoking `ares-install`. It does not uninstall Nuvio. On a requested downgrade the system disables the automatic-install switch so the old version isn't replaced the next evening. If LG refuses the older package, the app stops and records the error; user settings may still be incompatible with an older Nuvio. **Back up settings first where possible.**
@@ -99,7 +73,7 @@ This is an **app downgrade**, not an LG/webOS firmware downgrade. Initial Nuvio 
 - PBKDF2-hashed local dashboard password (at least 12 characters), session cookie, CSRF protection and login rate limiting.
 - Web API only exposes fixed update/check actions; **no arbitrary shell command endpoint**.
 - The TV's SSH keys stay in the local profile and are **never bundled** in releases.
-- On Linux systemd, the dashboard binds to `0.0.0.0:8765` for LAN access by default; Windows, macOS and Docker host port mappings default to `127.0.0.1:8765`. **Never expose raw HTTP port 8765 directly to the Internet.** Use localhost, trusted LAN or an HTTPS reverse proxy / VPN when appropriate.
+- On Linux systemd, the dashboard binds to `0.0.0.0:8765` for LAN access by default; on Windows it binds to `127.0.0.1:8765` unless installed with `-AllowLan`. **Never expose raw HTTP port 8765 directly to the Internet.** Use localhost, trusted LAN or an HTTPS reverse proxy / VPN when appropriate.
 - On fresh installations, **automatic installation is OFF**. Periodic checks still record status.
 
 ## Repository structure
@@ -110,8 +84,6 @@ web/                      Dashboard, CSS and browser JavaScript
 install.sh                Linux systemd installer
 uninstall.sh              Linux uninstall (keeps keys/config)
 systemd/                  systemd dashboard, check and timer units
-macos/                    macOS LaunchAgents installer / uninstall
-Dockerfile, compose.yaml  Container image + dashboard / daily scheduler
 scripts/connect-tv-linux.sh  Initial Linux pairing helper
 install-windows.cmd       Windows double-click installer (runs windows/install-windows.ps1)
 windows/                  Windows installer, TV pairing, doctor, manual start, firewall (opt-in), uninstall

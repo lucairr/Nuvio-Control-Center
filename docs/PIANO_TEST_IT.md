@@ -23,9 +23,7 @@
 
 - **Debian su ESXi:** la funzione di downgrade è stata segnalata come funzionante dall'utente che ha sviluppato il prototipo. Prossimo controllo: aggiornamento completo con pacchetto pubblico 1.2.0 beta.
 - **Windows 10/11:** validare installazione PowerShell, login, Scheduled Tasks, profilo CLI e primo aggiornamento.
-- **macOS Intel/Apple Silicon:** validare LaunchAgents, CLI, recupero key e installazione.
-- **Docker/NAS x86-64:** validare creazione volume, password, accesso LAN e connessione da container alla TV.
-- **Raspberry Pi/ARM64:** verificare prima di tutto che la CLI ufficiale LG si installi e funzioni. Non dare per scontata la compatibilità.
+- **Raspberry Pi/ARM64 (Linux 64 bit):** verificare prima di tutto che la CLI ufficiale LG si installi e funzioni. Non dare per scontata la compatibilità.
 
 ## Informazioni per segnalare un problema
 

@@ -124,7 +124,7 @@ After verifying the TV and Nuvio version in the dashboard, open **Versioni prece
 
 ## Raspberry Pi / ARM64 Linux
 
-This installer may work on 64-bit Debian-based ARM64 systems when Python 3.9+, Node 20+ and `@webos-tools/cli` work on the host. **ARM64 LG CLI compatibility is not verified**, and the official vendor CLI requirements are for supported 64-bit environments. Treat Pi 4/5 as experimental, and do not assume an install on Raspberry Pi OS 32-bit will work. See [hardware matrix](HARDWARE_COMPATIBILITY.md) and [Docker alternative](INSTALL_DOCKER.md).
+This installer may work on 64-bit Debian-based ARM64 systems when Python 3.9+, Node 20+ and `@webos-tools/cli` work on the host. **ARM64 LG CLI compatibility is not verified**, and the official vendor CLI requirements are for supported 64-bit environments. Treat Pi 4/5 as experimental, and do not assume an install on Raspberry Pi OS 32-bit will work. See [hardware matrix](HARDWARE_COMPATIBILITY.md).
 
 ## Upgrade or uninstall
 

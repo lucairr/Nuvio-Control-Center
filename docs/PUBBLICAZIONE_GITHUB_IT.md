@@ -2,7 +2,7 @@
 
 Questa guida riguarda solo il **codice del Control Center**. Nuvio TV ha il proprio repository e la propria licenza (GPL-3.0); questo progetto ne scarica le release ufficiali e non le ridistribuisce.
 
-I comandi sono pensati per il tuo **server Debian** (dove hai già il progetto), ma funzionano uguali su qualsiasi Linux/macOS. In fondo c'è la variante Windows.
+I comandi sono pensati per il tuo **server Debian** (dove hai già il progetto), ma funzionano uguali su qualsiasi Linux. In fondo c'è la variante Windows.
 
 ---
 
@@ -26,7 +26,7 @@ Se i due comandi non stampano nulla, sei a posto. `.gitignore` blocca comunque q
 2. **Privacy email:** Settings → Emails → spunta **Keep my email addresses private**. Copia l'indirizzo `NUMERO+utente@users.noreply.github.com` che ti mostra: lo userai nei commit, così la tua email personale non diventa pubblica.
 3. Crea il repository: https://github.com/new
    - Repository name: `Nuvio-Control-Center`
-   - Description: `Self-hosted dashboard to keep Nuvio TV updated on LG webOS (Developer Mode) - Linux, Windows, Docker`
+   - Description: `Self-hosted dashboard to keep Nuvio TV updated on LG webOS (Developer Mode) - Linux, Windows`
    - **Public**
    - **NON** spuntare *Add a README*, *.gitignore* o *license* (li abbiamo già: un repository non vuoto fa fallire il primo push).
    - Create repository.
@@ -103,7 +103,7 @@ Ricarica la pagina del repository: devi vedere il README con le istruzioni.
 
 Scheda **Actions** → workflow **Tests**. Deve diventare verde:
 
-- unit test su Ubuntu, Windows e macOS;
+- unit test su Ubuntu (Python 3.13 e 3.9) e Windows (Python 3.9 e 3.13);
 - sintassi degli script shell;
 - **parse degli script PowerShell con Windows PowerShell 5.1 e PowerShell 7** e controllo caratteri ASCII;
 - smoke test delle funzioni Windows (ricerca di Python/pythonw e npm).

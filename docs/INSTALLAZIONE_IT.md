@@ -51,12 +51,11 @@ Non servono privilegi di amministratore: il CLI LG viene installato in automatic
 
 [Guida Windows completa](INSTALL_WINDOWS.md).
 
-## Altri dispositivi e sistemi
+## Altri dispositivi
 
-- **Raspberry Pi 4/5 (solo 64-bit)**: installazione Debian/systemd o Docker; **compatibilità della CLI LG su ARM64 non ancora verificata**.
-- **NAS Synology, QNAP e Linux Docker**: procedura sperimentale in [guida Docker](INSTALL_DOCKER.md), con dati e chiavi SSH in un volume persistente.
-- **macOS Intel / Apple Silicon**: installer `macos/install-macos.sh`, `launchd`, istruzioni in [guida macOS](INSTALL_MACOS.md), non ancora verificato su hardware reale.
-- **Mini PC / NUC / Proxmox**: usa la guida Debian/Ubuntu per una VM Linux standard; anche Docker è opzionale.
+- **Mini PC / NUC / VM Proxmox o ESXi**: usa l'installazione Debian/Ubuntu qui sopra; è la soluzione consigliata per avere aggiornamenti anche a PC spento.
+- **Raspberry Pi 4/5 con sistema a 64 bit**: stessa installazione Linux, ma **la CLI LG su ARM64 non è ancora verificata**.
+- macOS, Docker e NAS non sono supportati in questa versione.
 
 [Compatibilità hardware e stato test](HARDWARE_COMPATIBILITY.md).
 

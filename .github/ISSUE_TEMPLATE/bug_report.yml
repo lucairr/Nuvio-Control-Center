@@ -11,7 +11,7 @@ body:
     id: host
     attributes:
       label: Host
-      options: [Debian/Ubuntu (systemd), Windows 10/11, macOS, Docker / NAS, Raspberry Pi / ARM64, Other]
+      options: [Debian/Ubuntu (systemd), Windows 10/11, Raspberry Pi (64-bit Linux), Other Linux]
     validations:
       required: true
   - type: input

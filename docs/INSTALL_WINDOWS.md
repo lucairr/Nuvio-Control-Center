@@ -101,6 +101,6 @@ The TV SSH key in `%USERPROFILE%\.ssh` is never deleted automatically.
 
 ## Limitations
 
-- Runs only while your user is signed in (Task Scheduler "run only when user is logged on": no stored Windows password). For 24/7 operation use a Linux mini PC/VM/NAS instead.
+- Runs only while your user is signed in (Task Scheduler "run only when user is logged on": no stored Windows password). For 24/7 operation use a Linux mini PC or VM instead.
 - No Windows Service, no `.exe`, no automatic firewall change unless you accept the `-AllowLan` prompt.
 - The LG Developer Mode session still expires and must be renewed on the TV.

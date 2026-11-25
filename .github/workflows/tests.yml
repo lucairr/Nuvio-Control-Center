@@ -12,14 +12,12 @@ jobs:
       fail-fast: false
       matrix:
         # Python 3.9 (Debian 11) on Linux runs in the python39 container job below:
-        # current ubuntu/macos runners no longer ship a 3.9 build.
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        # current Ubuntu runners no longer ship a 3.9 build.
+        os: [ubuntu-latest, windows-latest]
         python: ['3.13']
         include:
           - os: windows-latest
             python: '3.9'
-          - os: macos-latest
-            python: '3.10'
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
@@ -45,20 +43,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Shell syntax
-        run: bash -n install.sh uninstall.sh scripts/connect-tv-linux.sh macos/install-macos.sh macos/uninstall-macos.sh
-  docker-config:
-    name: Docker structure & YAML
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-      - name: Check Compose configuration
-        run: docker compose config -q
-      - name: Check image build files present
-        run: |
-          test -f Dockerfile
-          test -f .dockerignore
-          test -f nuvio/scheduler.py
-          test -f nuvio/bootstrap.py
+        run: bash -n install.sh uninstall.sh scripts/connect-tv-linux.sh
   powershell:
     name: PowerShell parse (${{ matrix.shell }})
     runs-on: windows-latest

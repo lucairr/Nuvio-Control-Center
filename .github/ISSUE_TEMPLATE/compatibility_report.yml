@@ -6,7 +6,7 @@ body:
     id: host
     attributes:
       label: Host (OS + CPU architecture)
-      placeholder: "Windows 11 x64 / Raspberry Pi 5 64-bit / Synology DS920+ Docker"
+      placeholder: "Windows 11 x64 / Debian 12 VM / Ubuntu 24.04 mini PC"
     validations:
       required: true
   - type: input

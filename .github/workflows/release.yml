@@ -20,7 +20,7 @@ jobs:
       - name: Test updater and build public archives
         run: |
           python3 -m unittest discover -s tests -v
-          bash -n install.sh uninstall.sh scripts/connect-tv-linux.sh macos/install-macos.sh macos/uninstall-macos.sh
+          bash -n install.sh uninstall.sh scripts/connect-tv-linux.sh
           python3 scripts/build-release.py
       - name: Publish GitHub release
         env:

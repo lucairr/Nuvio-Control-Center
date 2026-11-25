@@ -13,9 +13,8 @@ FILES = (
     '.gitattributes', '.gitignore', 'CHANGELOG.md',
     'CONTRIBUTING.md', 'LICENSE', 'README.md', 'SECURITY.md', 'install.sh', 'uninstall.sh',
     'install-windows.cmd',
-    'Dockerfile', 'compose.yaml', '.dockerignore',
 )
-DIRS = ('docs', 'nuvio', 'web', 'systemd', 'windows', 'scripts', 'tests', '.github', 'macos')
+DIRS = ('docs', 'nuvio', 'web', 'systemd', 'windows', 'scripts', 'tests', '.github')
 EXCLUDE = ('__pycache__', '.pytest_cache', '.venv', 'venv', 'dist', '.git')
 
 
