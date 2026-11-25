@@ -127,6 +127,8 @@ Esempio dopo aver creato Ko-fi:
 ko_fi: lucairr
 ```
 
+(Già attivo: https://ko-fi.com/lucairr)
+
 Poi `git add .github/FUNDING.yml && git commit -m "Enable sponsor button" && git push`. Le donazioni non devono sbloccare funzioni: il progetto resta gratuito (così anche nel README). Se gli importi diventano regolari, chiedi al tuo commercialista come dichiararli.
 
 ## 8. Pubblica la prima release (beta)

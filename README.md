@@ -2,6 +2,8 @@
 
 **A self-hosted web dashboard for keeping Nuvio TV updated on LG webOS Developer Mode devices.**
 
+[![Support on Ko-fi](https://img.shields.io/badge/Support%20on-Ko--fi-8b5cf0?logo=ko-fi&logoColor=white)](https://ko-fi.com/lucairr)
+
 ![Nuvio Control Center on PC and smartphone during an update](docs/screenshots/showcase.jpg)
 
 [🇮🇹 Guida italiana](docs/INSTALLAZIONE_IT.md) · [🇮🇹 Pubblicazione su GitHub](docs/PUBBLICAZIONE_GITHUB_IT.md) · [Linux setup](docs/INSTALL_LINUX.md) · [Windows setup](docs/INSTALL_WINDOWS.md) · [Hardware matrix](docs/HARDWARE_COMPATIBILITY.md) · [Test plan (IT)](docs/PIANO_TEST_IT.md) · [Troubleshooting](docs/TROUBLESHOOTING.md) · [Security](SECURITY.md)
@@ -133,7 +135,7 @@ Windows: run `doctor.ps1` from `%LOCALAPPDATA%\NuvioControlCenter`. The report i
 
 ## Support the project
 
-Nuvio Control Center is free and stays free. If it saves you a trip to Dev Manager every release, you can buy me a coffee via the **Sponsor** button at the top of this page. Donations are voluntary and do not unlock any feature. Please also consider [supporting the Nuvio developers](https://github.com/NuvioMedia/NuvioTVSmart), who build the app itself.
+Nuvio Control Center is free and stays free. If it saves you a trip to Dev Manager every release, you can buy me a coffee on **[Ko-fi](https://ko-fi.com/lucairr)** (also the **Sponsor** button at the top of this page). Donations are voluntary and do not unlock any feature. Please also consider [supporting the Nuvio developers](https://github.com/NuvioMedia/NuvioTVSmart), who build the app itself.
 
 ## Maintainers
 

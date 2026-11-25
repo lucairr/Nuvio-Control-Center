@@ -1,6 +1,3 @@
 # Shows the "Sponsor" button on the repository page.
-# Uncomment ONLY the platforms you have actually set up, with YOUR usernames.
-# github: [lucairr]          # GitHub Sponsors (requires approval of your Sponsors profile)
-# ko_fi: NOME_KOFI         # https://ko-fi.com/NOME_KOFI
-# buy_me_a_coffee: NOME_BMC
-# custom: ["https://paypal.me/NOME_PAYPAL"]
+ko_fi: lucairr
+# github: [lucairr]   # GitHub Sponsors: uncomment once the Sponsors profile is approved
