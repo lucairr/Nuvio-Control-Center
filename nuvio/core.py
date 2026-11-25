@@ -133,7 +133,14 @@ def log(message, kind='info'):
     d['logs'] = d['logs'][-120:]
     write_json(STATE_FILE, d)
     if sys.stdout is not None:
-        print(f'[{now()}] [{kind.upper()}] {message}', flush=True)
+        line = f'[{now()}] [{kind.upper()}] {message}'
+        try:
+            print(line, flush=True)
+        except UnicodeEncodeError:
+            # Windows consoles (cp1252/cp850) cannot print arrows, curly quotes, etc.
+            # A log line must never abort an install.
+            enc = getattr(sys.stdout, 'encoding', None) or 'ascii'
+            print(line.encode(enc, 'replace').decode(enc, 'replace'), flush=True)
 
 
 def history(action, outcome, version='', details=''):

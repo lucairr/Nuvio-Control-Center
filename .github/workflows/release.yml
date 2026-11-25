@@ -9,7 +9,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Check tag matches code version
         run: |
           CODE_VERSION=$(python3 -c "import re;print(re.search(r\"VERSION = '([^']+)'\", open('nuvio/core.py').read()).group(1))")

@@ -70,6 +70,18 @@ class StaleBusyTests(IsolatedState):
         perform.assert_not_called()
 
 
+class ConsoleEncodingTests(IsolatedState):
+    def test_log_survives_cp1252_console(self):
+        import io
+        raw = io.BytesIO()
+        console = io.TextIOWrapper(raw, encoding='cp1252', errors='strict')
+        with mock.patch('nuvio.core.sys.stdout', console):
+            core.log('Downgrade manuale richiesto: 1.2.10 \u2192 1.2.9 \u201cok\u201d')
+            console.flush()
+        self.assertIn(b'1.2.10 ? 1.2.9', raw.getvalue())
+        self.assertIn('\u2192', core.state()['logs'][-1]['message'])
+
+
 class WindowsCliTests(IsolatedState):
     def test_windows_cli_hides_console_and_keeps_user_home(self):
         with mock.patch.object(core, 'is_windows', return_value=True), \

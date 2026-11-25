@@ -11,20 +11,30 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # Python 3.9 (Debian 11) on Linux runs in the python39 container job below:
+        # current ubuntu/macos runners no longer ship a 3.9 build.
         os: [ubuntu-latest, windows-latest, macos-latest]
-        python: ['3.9', '3.13']
-        exclude:
-          # setup-python has no Python 3.9 build for Apple Silicon runners
-          - os: macos-latest
-            python: '3.9'
+        python: ['3.13']
         include:
+          - os: windows-latest
+            python: '3.9'
           - os: macos-latest
             python: '3.10'
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python }}
+      - name: Compile and unit tests
+        run: |
+          python -m compileall -q nuvio
+          python -m unittest discover -s tests -v
+  python39:
+    name: Unit tests (Linux, Python 3.9 container - Debian 11 baseline)
+    runs-on: ubuntu-latest
+    container: python:3.9-slim
+    steps:
+      - uses: actions/checkout@v5
       - name: Compile and unit tests
         run: |
           python -m compileall -q nuvio
@@ -33,14 +43,14 @@ jobs:
     name: Script syntax
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Shell syntax
         run: bash -n install.sh uninstall.sh scripts/connect-tv-linux.sh macos/install-macos.sh macos/uninstall-macos.sh
   docker-config:
     name: Docker structure & YAML
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Check Compose configuration
         run: docker compose config -q
       - name: Check image build files present
@@ -61,7 +71,7 @@ jobs:
       run:
         shell: ${{ matrix.shell }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Parse all PowerShell scripts
         run: |
           $failed = $false
@@ -85,3 +95,6 @@ jobs:
           Write-Host ('Python resolved: ' + $py.Exe + ' / ' + $py.Pyw + ' / ' + $py.Version)
           if (-not (Test-Path $py.Pyw)) { throw 'pythonw not found' }
           Write-Host ('npm prefix: ' + (Get-NpmPrefix))
+          # Native commands called by the helpers may leave a non-zero $LASTEXITCODE,
+          # which the Actions wrapper would report as a failure of this step.
+          exit 0

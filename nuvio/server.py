@@ -310,6 +310,11 @@ def main():
     job = sub.add_parser('run')
     job.add_argument('action', choices=('auto', 'check', 'update', 'force'))
     args = parser.parse_args()
+    for stream in (os.sys.stdout, os.sys.stderr):
+        try:
+            stream.reconfigure(errors='replace')
+        except (AttributeError, ValueError):
+            pass
     core.STATE_DIR.mkdir(parents=True, exist_ok=True)
     if args.command in ('serve', 'run'):
         redirect_output_if_windowless()
